@@ -1,0 +1,43 @@
+app = "mcp-bank-memory"
+primary_region = "sjc"
+
+[build]
+  dockerfile = "memory-store/Dockerfile"
+  # Build context is the repo root so shared/ is accessible
+  # Deploy with: fly deploy --config memory-store/fly.toml (from mcp-bank/ root)
+
+[env]
+  PORT = "8080"
+  ENVIRONMENT = "production"
+  BASE_URL = "https://mcp-bank-memory.fly.dev"
+
+[[services]]
+  internal_port = 8080
+  protocol = "tcp"
+  auto_stop_machines = true
+  auto_start_machines = true
+  min_machines_running = 0
+
+  [[services.ports]]
+    handlers = ["tls", "http"]
+    port = 443
+
+  [[services.ports]]
+    handlers = ["http"]
+    port = 80
+    force_https = true
+
+  [services.concurrency]
+    type = "requests"
+    hard_limit = 500
+    soft_limit = 400
+
+  [[services.http_checks]]
+    interval = "30s"
+    timeout = "5s"
+    path = "/health"
+    method = "GET"
+
+[[vm]]
+  size = "shared-cpu-1x"
+  memory = "512mb"
