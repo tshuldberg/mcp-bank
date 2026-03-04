@@ -1,0 +1,38 @@
+services:
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+
+  postgres:
+    image: ankane/pgvector:latest
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_DB: memorystore
+      POSTGRES_USER: mcpbank
+      POSTGRES_PASSWORD: devpassword
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  memory-store:
+    build: ./memory-store
+    ports:
+      - "8080:8080"
+    depends_on:
+      - redis
+      - postgres
+    env_file: .env
+    restart: unless-stopped
+
+  transform-agent:
+    build: ./transform-agent
+    ports:
+      - "8081:8080"
+    depends_on:
+      - redis
+    env_file: .env
+    restart: unless-stopped
+
+volumes:
+  postgres_data:

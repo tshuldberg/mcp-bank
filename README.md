@@ -105,3 +105,66 @@ No Stripe. No invoices. No forms. Machine pays machine.
 | Memory Store | In development | — |
 | Transform Agent | In development | — |
 | Code Executor | Planned | — |
+
+---
+
+## Local Development
+
+```bash
+# Start all services (Redis, Postgres/pgvector, memory-store, transform-agent)
+make dev
+
+# Run all tests
+make test
+
+# Run tests for a single service
+make test-memory
+make test-transform
+
+# Lint all services
+make lint
+
+# Tear down
+make dev-down
+```
+
+Copy `.env.example` to `.env` and fill in your CDP wallet credentials before starting.
+
+---
+
+## Architecture
+
+```
+                        ┌─────────────────────────────────────────┐
+                        │              Agent (client)              │
+                        └──────────────┬──────────────────────────┘
+                                       │ HTTP + x402 micropayment
+                    ┌──────────────────┼──────────────────────┐
+                    │                  │                       │
+                    ▼                  ▼                       ▼
+          ┌─────────────────┐ ┌─────────────────┐   future services...
+          │  Memory Store   │ │ Transform Agent │
+          │  :8080 / Fly.io │ │  :8081 / Fly.io │
+          └────────┬────────┘ └────────┬────────┘
+                   │                   │
+          ┌────────▼────────┐ ┌────────▼────────┐
+          │  pgvector        │ │     Redis       │
+          │  (vector search) │ │  (rate limits / │
+          │  + Redis (KV)    │ │   cache)        │
+          └─────────────────┘ └─────────────────┘
+
+x402 Payment Flow:
+  Agent → POST /memory/set
+        ← 402 Payment Required (USDC/Base, $0.001)
+  Agent → POST /memory/set + X-PAYMENT header (signed USDC tx)
+        ← 200 OK + result
+        ← USDC settles to WALLET_ADDRESS on Base
+```
+
+Deploy a single service or all at once:
+
+```bash
+make deploy-memory    # fly deploy from memory-store/
+make deploy-transform # fly deploy from transform-agent/
+make deploy           # both
+```
