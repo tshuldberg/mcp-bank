@@ -1,4 +1,7 @@
-app = "mcp-bank-extractor"
+# ARCHIVED. The live extractor is mcp-apps/mcp-structured-extractor (Fly app
+# mcp-bank-extractor). This name is deliberately different so a deploy from here
+# can never replace it. Do not create this Fly app.
+app = "mcp-bank-extractor-archived"
 primary_region = "sea"
 
 [build]
@@ -7,7 +10,7 @@ primary_region = "sea"
 [env]
   PORT = "8080"
   ENVIRONMENT = "production"
-  BASE_URL = "https://mcp-bank-extractor.fly.dev"
+  BASE_URL = "https://mcp-bank-extractor-archived.fly.dev"
 
 [http_service]
   internal_port = 8080

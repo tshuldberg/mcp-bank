@@ -37,7 +37,7 @@ _PRICING = {
 
 @router.get("/.well-known/agent-card.json")
 async def agent_card() -> ORJSONResponse:
-    base_url = os.environ.get("BASE_URL", "https://mcp-bank-extractor.fly.dev")
+    base_url = os.environ.get("BASE_URL", "https://mcp-bank-extractor-archived.fly.dev")
     card = generate_a2a_card(
         name="Structured Extractor",
         description=(

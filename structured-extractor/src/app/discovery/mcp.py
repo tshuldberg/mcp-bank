@@ -239,7 +239,7 @@ async def mcp_handler(request: Request) -> ORJSONResponse:
 
 @router.get("/.well-known/mcp.json")
 async def mcp_manifest() -> ORJSONResponse:
-    base_url = os.environ.get("BASE_URL", "https://mcp-bank-extractor.fly.dev")
+    base_url = os.environ.get("BASE_URL", "https://mcp-bank-extractor-archived.fly.dev")
     return ORJSONResponse({
         "schema_version": "1.0",
         "name": "Structured Extractor",

@@ -1,3 +1,8 @@
+> **Archived.** This is the March 2026 predecessor of the structured extractor that now lives in the
+> mcp-apps family (`mcp-structured-extractor`, deployed as the Fly app `mcp-bank-extractor`). Do not deploy
+> this folder; its `fly.toml` uses the app name `mcp-bank-extractor-archived` so it cannot overwrite the live
+> service.
+
 # Structured Extractor
 
 URL + JSON Schema -> structured data. MCP-native. x402-paid. No signup.
@@ -17,8 +22,8 @@ Agents need structured data from the web constantly. Product prices, contact inf
 ```json
 {
   "mcpServers": {
-    "mcp-bank-extractor": {
-      "url": "https://extractor.mcp-bank.fly.dev/mcp"
+    "mcp-bank-extractor-archived": {
+      "url": "https://mcp-bank-extractor-archived.fly.dev/mcp"
     }
   }
 }
